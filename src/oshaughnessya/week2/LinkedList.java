@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 // Singly Linked List - can only travel forward
 // Doubly Linked List - can travel forwards or backwards
@@ -34,6 +35,7 @@ public class LinkedList<E> implements List<E> {
 
     public LinkedList() {
         head = null;
+        tail = null;
     }
 
     @Override
@@ -59,9 +61,37 @@ public class LinkedList<E> implements List<E> {
         return false;
     }
 
+    private class ArrayListIterator implements Iterator<E> {
+        Node<E> next = head;
+        Node<E> previous = null;
+        Node<E> previousPrevious = null;
+
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public E next() {
+            E value = next.value;
+            previousPrevious = previous;
+            previous = next;
+            next = next.next;
+            return value;
+        }
+
+        @Override
+        public void remove() {
+            if (previous == null) {
+                throw new IllegalStateException("removed called twice in a row");
+            }
+            previousPrevious.next = next;
+        }
+    }
+
     @Override
     public Iterator<E> iterator() {
-        return null;
+        return new ArrayListIterator();
     }
 
     @Override
@@ -105,21 +135,44 @@ public class LinkedList<E> implements List<E> {
 
     @Override
     public E get(int index) {
-        return null;
+        if (index < 0 || index >= size()) {
+            throw new IndexOutOfBoundsException("Index: " + index + " invalid for size " + size());
+        }
+
+        Node<E> walker = head;
+        while (index > 0) {
+            walker = walker.next;
+            index--;
+        }
+
+        return walker.value;
     }
 
     @Override
     public void add(int index, E element) {
+        if (index < 0 || index >= size()) {
+            throw new IndexOutOfBoundsException("Index: " + index + " invalid for size " + size());
+        }
 
+        if (index == 0) {
+            head = new Node<>(element, head);
+        } else {
+
+        }
     }
 
     @Override
-    public E set(int index, Object element) {
+    public E set(int index, E e) {
         return null;
     }
 
     @Override
     public E remove(int index) {
+
+        if (index < 0 || index >= size()) {
+            throw new IndexOutOfBoundsException("Index: " + index + " invalid for size " + size());
+        }
+
         E removed = null;
 
         if (index == 0) {
@@ -138,12 +191,28 @@ public class LinkedList<E> implements List<E> {
 
             removed = walker.next.value;
             walker.next = walker.next.next;
+
+            // check if we removed the tail and change if needed
+            if (walker.next == null) {
+                tail = walker;
+            }
         }
         return removed;
     }
 
+    @Override
     public int indexOf(Object o) {
-        return 0;
+        int index = -1;
+        Node<E> walker = head;
+
+        for (int i = 0; walker != null && index == -1; i++) {
+            if (Objects.equals(walker.value, o)) {
+                index = i;
+            }
+            walker = walker.next;
+        }
+
+        return index;
     }
 
     @Override
