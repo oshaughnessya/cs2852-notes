@@ -61,7 +61,7 @@ public class LinkedList<E> implements List<E> {
         return false;
     }
 
-    private class ArrayListIterator implements Iterator<E> {
+    private class LinkedListIterator implements Iterator<E> {
         Node<E> next = head;
         Node<E> previous = null;
         Node<E> previousPrevious = null;
@@ -91,7 +91,7 @@ public class LinkedList<E> implements List<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return new ArrayListIterator();
+        return new LinkedListIterator();
     }
 
     @Override

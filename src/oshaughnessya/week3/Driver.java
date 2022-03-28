@@ -2,7 +2,6 @@ package oshaughnessya.week3;
 
 import oshaughnessya.week2.LinkedList;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
